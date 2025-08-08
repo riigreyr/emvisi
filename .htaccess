@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteBase /emvisi/
+
+# Root /emvisi/ load view/home.php
+RewriteRule ^$ view/home.php [L]
+
+# /emvisi/home atau /emvisi/home/ juga load view/home.php
+RewriteRule ^home/?$ view/home.php [L]
+
+# /emvisi/home/peta load view/peta.php
+RewriteRule ^home/peta/?$ view/peta.php [L]
+
+# Kalau file/folder ada, jangan rewrite
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Semua request lain diarahkan ke index.php
+RewriteRule . index.php [L]
