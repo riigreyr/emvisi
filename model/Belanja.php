@@ -5,21 +5,24 @@ class Belanja {
     private $conn;
 
     public function findNearestWithinRadius($latitude, $longitude, $radius = 1000, $limit = 3) {
-    $stmt = $this->conn->prepare("
+    $sql = "
         SELECT *,
-    (6371000 * ACOS(
-        COS(RADIANS(:latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(:longitude)) +
-        SIN(RADIANS(:latitude)) * SIN(RADIANS(latitude))
-    )) AS distance
-FROM warkop
-HAVING distance < 1000
-ORDER BY distance ASC
-LIMIT 3;");
-    $stmt->bind_param("dddii", $latitude, $longitude, $latitude, $radius, $limit);
+            (6371000 * ACOS(
+                COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) +
+                SIN(RADIANS(?)) * SIN(RADIANS(latitude))
+            )) AS distance
+        FROM belanja
+        HAVING distance <= ?
+        ORDER BY distance ASC
+        LIMIT ?
+    ";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ddddd", $latitude, $longitude, $latitude, $radius, $limit);
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+        
 
 
 

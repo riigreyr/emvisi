@@ -25,6 +25,25 @@ public function updateProfile($id, $fullname, $description) {
     return $stmt->execute();
 }
 
+public function getUserTaggingPhotos($userId) {
+    $stmt = $this->conn->prepare("
+        SELECT path_foto 
+        FROM tag_belanja 
+        WHERE user_id = ? 
+        ORDER BY entri_at DESC
+    ");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $photos = [];
+    while ($row = $result->fetch_assoc()) {
+        $photos[] = $row['path_foto'];
+    }
+    $stmt->close();
+    return $photos;
+}
+
+
 
 
 

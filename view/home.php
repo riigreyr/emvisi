@@ -1,9 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include_once __DIR__ . '/../controller/HomeController.php';
-$controller = new HomeController();
-?>
 
+$controller = new HomeController();
+$photos = $controller->getUserPhotosForHome();
+
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -11,7 +13,6 @@ $controller = new HomeController();
   <meta charset="UTF-8" />
   <title>Homepage - BelanjaYuk</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     html, body { height: 100%; }
     body { display: flex; flex-direction: column; }
@@ -68,16 +69,24 @@ $controller = new HomeController();
       <div class="col-lg-7">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner rounded-3 shadow-sm">
-            <div class="carousel-item active position-relative">
-              <img src="../assets/img/slide1.jpg" class="slideshow-img" alt="Slide 1" />
-              <div class="carousel-caption-custom"></div>
-            </div>
-            <div class="carousel-item">
-              <img src="../assets/img/slide2.jpg" class="slideshow-img" alt="Slide 2" />
-            </div>
-            <div class="carousel-item">
-              <img src="../assets/img/slide3.jpg" class="slideshow-img" alt="Slide 3" />
-            </div>
+            <?php if (!empty($photos)): ?>
+              <?php foreach ($photos as $index => $fotoPath): ?>
+                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                  <img src="/emvisi/uploads/<?= htmlspecialchars($fotoPath) ?>" class="slideshow-img" alt="Foto Tagging <?= $index + 1 ?>" />
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="carousel-item active position-relative">
+                <img src="../assets/img/slide1.jpg" class="slideshow-img" alt="Slide 1" />
+                <div class="carousel-caption-custom"></div>
+              </div>
+              <div class="carousel-item">
+                <img src="../assets/img/slide2.jpg" class="slideshow-img" alt="Slide 2" />
+              </div>
+              <div class="carousel-item">
+                <img src="../assets/img/slide3.jpg" class="slideshow-img" alt="Slide 3" />
+              </div>
+            <?php endif; ?>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
@@ -134,8 +143,6 @@ if (!empty($_SESSION['notif_register'])) {
     unset($_SESSION['notif_register']);
 }
 ?>
-
-
 
             </form>
           </div>
@@ -226,12 +233,10 @@ if (!empty($_SESSION['notif_register'])) {
         alert.style.transition = 'opacity 0.5s ease';
         alert.style.opacity = '0';
         setTimeout(() => alert.remove(), 500);
-      }, 1000); // notif hilang setelah 3 detik
+      }, 3000); // notif hilang setelah 3 detik
     }
   });
 </script>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php if (isset($_SESSION['switch_to_login'])): ?>

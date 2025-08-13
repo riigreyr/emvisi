@@ -23,6 +23,16 @@ class HomeController {
         }
     }
 
+    public function getUserPhotosForHome() {
+    if (!isset($_SESSION['user'])) return [];
+$userId = $_SESSION['user']['id'];
+return $this->userModel->getUserTaggingPhotos($userId);
+
+}
+
+
+
+
     private function handleRegister() {
         if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['fullname'])) {
             $_SESSION['notif_register'] = "<div class='alert alert-warning mt-2'>Isi semua field wajib diisi.</div>";

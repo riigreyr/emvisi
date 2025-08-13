@@ -21,22 +21,14 @@ $user = $_SESSION['user'];
     html, body { height: 100%; }
     body { display: flex; flex-direction: column; }
     main { flex: 1; }
-    footer {
-      background: #e9ecef; text-align: center;
-      padding: 1.5rem 0; font-size: 0.9rem; color: #333;
-    }
+    footer { background: #e9ecef; text-align: center; padding: 1.5rem 0; font-size: 0.9rem; color: #333; }
     .bg-blue-dark { background-color: #0b3d91 !important; color: white !important; }
-    .btn-blue-dark {
-      background-color: #0b3d91; border-color: #0b3d91; color: white;
-    }
-    .btn-blue-dark:hover {
-      background-color: #092f6d; border-color: #092f6d; color: white;
-    }
+    .btn-blue-dark { background-color: #0b3d91; border-color: #0b3d91; color: white; }
+    .btn-blue-dark:hover { background-color: #092f6d; border-color: #092f6d; color: white; }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-blue-dark px-3">
   <a class="navbar-brand" href="#">BelanjaYuk</a>
@@ -47,7 +39,7 @@ $user = $_SESSION['user'];
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ms-auto">
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/emvisi/dashboard">Beranda</a>
+        <a class="nav-link active" href="/emvisi/dashboard">Beranda</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/emvisi/home/peta">Peta</a>
@@ -56,14 +48,12 @@ $user = $_SESSION['user'];
   </div>
 </nav>
 
-<!-- Tombol Logout di bawah navbar -->
+<!-- Tombol Logout -->
 <div class="container mt-3 d-flex justify-content-end">
   <a class="btn btn-sm btn-light" href="/emvisi/index.php?logout=true">
     <i class="bi bi-box-arrow-right"></i> Logout
   </a>
 </div>
-
-
 
 <!-- Main Content -->
 <main class="container mt-4">
@@ -77,27 +67,27 @@ $user = $_SESSION['user'];
   </ul>
 
   <div class="tab-content" id="dashboardTabContent">
-    <!-- Edit Profile Tab -->
+    <!-- Profile -->
     <div class="tab-pane fade show active" id="profile" role="tabpanel">
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-blue-dark">Profil Anda</div>
         <div class="card-body">
           <?php if (isset($_SESSION['update_success'])): ?>
-  <div class="alert alert-success"><?= $_SESSION['update_success']; unset($_SESSION['update_success']); ?></div>
-<?php elseif (isset($_SESSION['update_error'])): ?>
-  <div class="alert alert-danger"><?= $_SESSION['update_error']; unset($_SESSION['update_error']); ?></div>
-<?php endif; ?>
+            <div class="alert alert-success"><?= $_SESSION['update_success']; unset($_SESSION['update_success']); ?></div>
+          <?php elseif (isset($_SESSION['update_error'])): ?>
+            <div class="alert alert-danger"><?= $_SESSION['update_error']; unset($_SESSION['update_error']); ?></div>
+          <?php endif; ?>
           <form method="post" action="/emvisi/dashboard"> 
             <div class="mb-3">
-              <label class="form-label">Email</label>
+              <label>Email</label>
               <input type="email" class="form-control" value="<?= htmlspecialchars($user['user_email']) ?>" readonly />
             </div>
             <div class="mb-3">
-              <label class="form-label">Nama Lengkap</label>
+              <label>Nama Lengkap</label>
               <input type="text" class="form-control" name="fullname" value="<?= htmlspecialchars($user['full_name']) ?>" />
             </div>
             <div class="mb-3">
-              <label class="form-label">Deskripsi</label>
+              <label>Deskripsi</label>
               <input type="text" class="form-control" name="description" value="<?= htmlspecialchars($user['user_description']) ?>" />
             </div>
             <button class="btn btn-blue-dark">Update</button>
@@ -106,58 +96,51 @@ $user = $_SESSION['user'];
       </div>
     </div>
 
-    <!-- Tagging Tab -->
+    <!-- Tagging -->
     <div class="tab-pane fade" id="tagging" role="tabpanel">
       <div class="card shadow-sm">
         <?php if (isset($_SESSION['tagging_success'])): ?>
-  <div class="alert alert-success"><?= $_SESSION['tagging_success']; unset($_SESSION['tagging_success']); ?></div>
-<?php elseif (isset($_SESSION['tagging_error'])): ?>
-  <div class="alert alert-danger"><?= $_SESSION['tagging_error']; unset($_SESSION['tagging_error']); ?></div>
-<?php endif; ?>
+          <div class="alert alert-success"><?= $_SESSION['tagging_success']; unset($_SESSION['tagging_success']); ?></div>
+        <?php elseif (isset($_SESSION['tagging_error'])): ?>
+          <div class="alert alert-danger"><?= $_SESSION['tagging_error']; unset($_SESSION['tagging_error']); ?></div>
+        <?php endif; ?>
 
         <div class="card-header bg-blue-dark">Form Tagging</div>
         <div class="card-body">
           <form method="post" action="/emvisi/dashboard" enctype="multipart/form-data" id="tagForm">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="mb-3">
-        <label>Current Latitude</label>
-        <input type="text" name="latitude" id="latitude" class="form-control" readonly required>
-      </div>
-      <div class="mb-3">
-        <label>Current Longitude</label>
-        <input type="text" name="longitude" id="longitude" class="form-control" readonly required>
-      </div>
-      <div class="mb-3">
-        <label>Foto Upload *</label>
-        <input type="file" name="foto" class="form-control" required>
-      </div>
-    </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label>Latitude</label>
+                  <input type="text" name="latitude" id="latitude" class="form-control" readonly required>
+                </div>
+                <div class="mb-3">
+                  <label>Longitude</label>
+                  <input type="text" name="longitude" id="longitude" class="form-control" readonly required>
+                </div>
+                <div class="mb-3">
+  <label>Foto Upload *</label>
+  <input type="file" name="foto" class="form-control" id="fotoUpload" disabled required>
+</div>
 
-    <div class="col-md-6">
-      <div class="mb-3">
-        <label>Nama Marker/Lokasi</label>
-        <input type="text" name="nama_lokasi" id="nama_lokasi" class="form-control" readonly>
-      </div>
-      <div class="mb-3">
-        <label>Jarak (meter)</label>
-        <input type="text" name="radius" id="radius" class="form-control" readonly>
-      </div>
-    </div>
-  </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label>Nama Lokasi</label>
+                  <input type="text" name="nama_lokasi" id="nama_lokasi" class="form-control" readonly>
+                </div>
+                <div class="mb-3">
+                  <label>Jarak (meter)</label>
+                  <input type="text" name="radius" id="radius" class="form-control" readonly>
+                </div>
+              </div>
+            </div>
 
-  <!-- Tombol Tengah di Bawah Semua -->
-  <div class="d-flex justify-content-center gap-3 mt-4">
-    <button type="button" onclick="checkLocation()" class="btn btn-secondary">Check Lokasi & Marker</button>
-    <button type="submit" class="btn btn-success" id="btnTagging" disabled>Tagging</button>
-  </div>
-</form>
-
-    </div>
-  </div>
-</form>
-
-  
+            <div class="d-flex justify-content-center gap-3 mt-4">
+              <button type="button" onclick="checkLocation()" class="btn btn-secondary">Check Lokasi & Marker</button>
+              <button type="submit" class="btn btn-success" id="btnTagging" disabled>Tagging</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -165,18 +148,20 @@ $user = $_SESSION['user'];
 </main>
 
 <!-- Footer -->
-<footer class="mt-5 py-4 bg-blue-dark text-white">
+<!-- Footer -->
+<footer class="mt-5 py-4 bg-blue-dark text-white text-center" style="padding: 1.5rem 0; font-size: 0.9rem;">
   <div class="container">
-    <strong>BelanjaYuk</strong><br>
-    <small>©2025 dikembangkan oleh Fakhri</small>
+    <strong>BelanjaYuk</strong><br />
+    <small>©<?= date('Y') ?> dikembangkan oleh Fakhri</small><br />
     <div class="mt-2">
-      <strong>Kontak Kami</strong><br>
-      Dinas Komunikasi, Informatika dan Persandian Aceh<br>
-      Jl. Jalan. 10<br>
+      <strong>Kontak Kami</strong><br />
+      Dinas Komunikasi, Informatika dan Persandian Aceh<br />
+      Jl. Jalan. 10<br />
       Banda Aceh
     </div>
   </div>
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -198,33 +183,41 @@ function checkLocation() {
       document.getElementById("nama_lokasi").value = data.nama;
       document.getElementById("radius").value = data.jarak;
       alert("Berhasil! Lokasi ditemukan: " + data.nama + " (Jarak: " + data.jarak + " m)");
+
+      // Aktifkan input foto setelah lokasi valid
+      document.getElementById("fotoUpload").disabled = false;
     } else {
       alert("Anda berada di luar radius lokasi.");
       document.getElementById("nama_lokasi").value = "";
       document.getElementById("radius").value = "";
+      document.getElementById("fotoUpload").disabled = true;
+      document.getElementById("btnTagging").disabled = true;
     }
-
-    checkEnableTagging(); // tetap panggil untuk memastikan kondisi tombol
   }, () => {
     alert("Gagal mendapatkan lokasi.");
   });
 }
 
 function checkEnableTagging() {
-  const lat = document.getElementById("latitude").value;
-  const lng = document.getElementById("longitude").value;
-  const nama = document.getElementById("nama_lokasi").value;
+  const lat = document.getElementById("latitude").value.trim();
+  const lng = document.getElementById("longitude").value.trim();
+  const nama = document.getElementById("nama_lokasi").value.trim();
+  const radius = document.getElementById("radius").value.trim();
   const foto = document.querySelector("input[name='foto']").files.length > 0;
 
-  const canTag = lat && lng && nama && foto;
+  const canTag = lat && lng && nama && radius && foto;
   document.getElementById("btnTagging").disabled = !canTag;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelector("input[name='foto']").addEventListener("change", checkEnableTagging);
 });
-</script>
 
+document.getElementById("tagForm").addEventListener("submit", function(e){
+  document.getElementById("btnTagging").disabled = true;
+});
+
+</script>
 
 </body>
 </html>

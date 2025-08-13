@@ -54,14 +54,20 @@ class DashboardController {
     }
 
     $userId = $_SESSION['user']['id'];
-    $nama = $_POST['nama_lokasi'];
-    $lat = $_POST['latitude'];
-    $lng = $_POST['longitude'];
-    $radius = $_POST['radius'];
+    $nama = $_POST['nama_lokasi'] ?? '';
+    $lat = $_POST['latitude'] ?? '';
+    $lng = $_POST['longitude'] ?? '';
+    $radius = $_POST['radius'] ?? '';
 
-    // cari ID belanja berdasarkan nama
+    // Validasi input lokasi
+    if (!$nama || !$lat || !$lng) {
+        $_SESSION['tagging_error'] = "Data lokasi tidak lengkap.";
+        return;
+    }
+
     $belanjaModel = new Belanja();
     $belanja = $belanjaModel->getByName($nama);
+
     if (!$belanja) {
         $_SESSION['tagging_error'] = "Lokasi tidak ditemukan di database.";
         return;
@@ -69,18 +75,49 @@ class DashboardController {
 
     $belanjaId = $belanja['id'];
 
-    // upload foto
-    $uploadDir = __DIR__ . '/../uploads/';
-    $filename = uniqid() . '_' . basename($_FILES['foto']['name']);
-    move_uploaded_file($_FILES['foto']['tmp_name'], $uploadDir . $filename);
+    // Dapatkan koneksi DB
+    $conn = $belanjaModel->getConnection();
 
-    // simpan ke tag_belanja
+    // Cek duplikat berdasarkan user_id, belanja_id, latitude, longitude
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM tag_belanja WHERE user_id = ? AND belanja_id = ? AND latitude = ? AND longitude = ?");
+    if (!$stmt) {
+        $_SESSION['tagging_error'] = "Error database: " . $conn->error;
+        return;
+    }
+    $stmt->bind_param("iidd", $userId, $belanjaId, $lat, $lng);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($count > 0) {
+        $_SESSION['tagging_error'] = "Anda sudah menandai lokasi ini sebelumnya.";
+        return;
+    }
+
+    // Upload file
+    $uploadDir = __DIR__ . '/../uploads/';
+    $fileTmp = $_FILES['foto']['tmp_name'];
+    $originalName = basename($_FILES['foto']['name']);
+    $ext = pathinfo($originalName, PATHINFO_EXTENSION);
+    $filename = uniqid('foto_', true) . '.' . $ext;
+
+    if (!move_uploaded_file($fileTmp, $uploadDir . $filename)) {
+        $_SESSION['tagging_error'] = "Gagal upload foto.";
+        return;
+    }
+
+    // Simpan ke tag_belanja
     $success = $belanjaModel->insertTagBelanja($userId, $belanjaId, $lat, $lng, $filename);
+
     if ($success) {
         $_SESSION['tagging_success'] = "Berhasil menandai lokasi!";
     } else {
-        $_SESSION['tagging_error'] = "Gagal menyimpan ke database.";
-    }
+        $_SESSION['tagging_error'] = "Gagal menyimpan data tagging ke database.";
+        // Kalau gagal simpan, hapus file yang sudah diupload agar tidak numpuk
+        if (file_exists($uploadDir . $filename)) {
+            unlink($uploadDir . $filename);
+        }
     }
 }
-
+}

@@ -4,7 +4,7 @@ include_once __DIR__ . "/../controller/PetaController.php";
 
 $controller = new PetaController();
 $dataBelanja = $controller->getDataBelanja();
-
+$dataTagging = $controller->getDataTagging();
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,6 @@ $dataBelanja = $controller->getDataBelanja();
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    /* Buat sticky footer */
     html, body {
       height: 100%;
       margin: 0;
@@ -23,7 +22,7 @@ $dataBelanja = $controller->getDataBelanja();
       flex-direction: column;
     }
     .container {
-      flex: 1 0 auto; /* Konten utama bisa tumbuh dan dorong footer */
+      flex: 1 0 auto;
     }
     footer {
       flex-shrink: 0;
@@ -39,38 +38,34 @@ $dataBelanja = $controller->getDataBelanja();
       border-radius: 0.5rem;
     }
 
-    /* ======= Slideshow fix supaya gak glitch turun-naik ======= */
-    #carouselExample {
+    /* Container foto & info di kanan */
+    #infoPanel {
       width: 400px;
-      height: 180px;
-      overflow: hidden; /* sembunyikan bagian animasi keluar container */
-      border-radius: 0.5rem;
-      position: relative;
+      padding-left: 15px;
     }
-    #carouselExample .carousel-inner {
-      height: 180px; /* pastikan tinggi tetap */
-    }
-    .slideshow-img {
+    #infoPanel img {
       width: 100%;
       height: 180px;
       object-fit: cover;
       border-radius: 0.5rem;
       user-select: none;
       pointer-events: none;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
-    /* =============================================== */
-
-    .card-header {
-      font-weight: bold;
+    #infoText {
+      margin-top: 10px;
+      font-weight: 600;
+      color: #0b3d91;
+      min-height: 50px;
     }
 
-    /* Responsive: kolom jadi stack di layar kecil */
+    /* Responsive */
     @media (max-width: 1200px) {
-      #map, #carouselExample {
+      #map, #infoPanel {
         width: 100% !important;
         height: auto !important;
       }
-      .slideshow-img {
+      #infoPanel img {
         height: auto !important;
       }
     }
@@ -78,10 +73,9 @@ $dataBelanja = $controller->getDataBelanja();
 </head>
 <body>
 
-<!-- NAVBAR -->
-<!-- bagian navbar -->
+<!-- Navbar dan Konten seperti sebelumnya -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-blue-dark px-3">
-  <a class="navbar-brand" href="/emvisi/"><?= "BelanjaYuk" ?></a>
+  <a class="navbar-brand" href="/emvisi/">BelanjaYuk</a>
   ...
   <ul class="navbar-nav ms-auto">
     <li class="nav-item">
@@ -93,10 +87,9 @@ $dataBelanja = $controller->getDataBelanja();
   </ul>
 </nav>
 
-<!-- KONTEN UTAMA -->
 <div class="container mt-4">
   <div class="row gx-4 justify-content-center">
-    <!-- Kolom kiri: Peta 800x250 -->
+    <!-- Peta -->
     <div class="col-auto">
       <div class="card shadow-sm">
         <div class="card-body">
@@ -106,76 +99,61 @@ $dataBelanja = $controller->getDataBelanja();
       </div>
     </div>
 
-    <!-- Kolom kanan: Slideshow 400x180 -->
+    <!-- Panel Foto dan Info User & Lokasi -->
     <div class="col-auto d-flex align-items-start">
-      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner rounded-3 shadow-sm">
-          <div class="carousel-item active">
-            <img src="" class="d-block slideshow-img" alt="Slide 1" />
-          </div>
-          <div class="carousel-item">
-            <img src="https://source.unsplash.com/400x180/?mall" class="d-block slideshow-img" alt="Slide 2" />
-          </div>
-          <div class="carousel-item">
-            <img src="https://source.unsplash.com/400x180/?store" class="d-block slideshow-img" alt="Slide 3" />
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-          <span class="visually-hidden">Sebelumnya</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-          <span class="visually-hidden">Selanjutnya</span>
-        </button>
+      <div id="infoPanel">
+        <img id="fotoMarker" src="" alt="Foto Lokasi" />
+        <div id="infoText">Klik marker di peta untuk melihat info lokasi dan user</div>
       </div>
     </div>
   </div>
 
-  <!-- Klasemen bawah full lebar -->
-  <div class="row mt-4 g-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-header bg-blue-dark">🏆 Top 5 User</div>
-        <ul class="list-group list-group-flush">
-          <?php foreach ($data['klasemen'] ?? [] as $k): ?>
-            <li class="list-group-item">
-              <?= htmlspecialchars($k['nama']) ?>
-              <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($k['skor']) ?></span>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+  <!-- (Klasemen dan footer tetap sama, tidak diubah) -->
+   <!-- Klasemen bawah full lebar -->
+<div class="row mt-4 g-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-blue-dark">🏆 Top 5 User</div>
+      <ul class="list-group list-group-flush">
+        <?php foreach ($data['klasemen'] ?? [] as $k): ?>
+          <li class="list-group-item">
+            <?= htmlspecialchars($k['nama']) ?>
+            <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($k['skor']) ?></span>
+          </li>
+        <?php endforeach; ?>
+      </ul>
     </div>
+  </div>
 
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-header bg-blue-dark">📍 Lokasi Terbanyak</div>
-        <ul class="list-group list-group-flush">
-          <?php foreach ($data['terbanyak'] ?? [] as $t): ?>
-            <li class="list-group-item">
-              <?= htmlspecialchars($t['nama']) ?>
-              <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($t['total']) ?></span>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-blue-dark">📍 Lokasi Terbanyak</div>
+      <ul class="list-group list-group-flush">
+        <?php foreach ($data['terbanyak'] ?? [] as $t): ?>
+          <li class="list-group-item">
+            <?= htmlspecialchars($t['nama']) ?>
+            <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($t['total']) ?></span>
+          </li>
+        <?php endforeach; ?>
+      </ul>
     </div>
+  </div>
 
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-header bg-blue-dark">📊 Statistik</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">User <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_user'] ?? '0') ?></span></li>
-          <li class="list-group-item">Tagging <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_tagging'] ?? '0') ?></span></li>
-          <li class="list-group-item">Belanja <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_belanja'] ?? '0') ?></span></li>
-        </ul>
-      </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-blue-dark">📊 Statistik</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">User <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_user'] ?? '0') ?></span></li>
+        <li class="list-group-item">Tagging <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_tagging'] ?? '0') ?></span></li>
+        <li class="list-group-item">Belanja <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_belanja'] ?? '0') ?></span></li>
+      </ul>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
+</div>
+
+
 <footer class="mt-5 py-4 bg-blue-dark text-white text-center" style="padding: 1.5rem 0; font-size: 0.9rem;">
   <div class="container">
     <strong>BelanjaYuk</strong><br />
@@ -189,23 +167,53 @@ $dataBelanja = $controller->getDataBelanja();
   </div>
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   var map = L.map('map').setView([-6.2, 106.8], 11);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
+  // Circle untuk data belanja (radius wilayah)
   <?php foreach ($dataBelanja as $b): ?>
     L.circle([<?= $b['latitude'] ?>, <?= $b['longitude'] ?>], {
       radius: <?= $b['radius'] ?>,
       color: 'blue',
-      fillOpacity: 0.5
+      fillOpacity: 0.3
     }).addTo(map).bindPopup("<?= htmlspecialchars($b['nama']) ?>");
   <?php endforeach; ?>
+
+  var dataTagging = <?= json_encode($dataTagging) ?>;
+
+  var fotoMarker = document.getElementById('fotoMarker');
+  var infoText = document.getElementById('infoText');
+
+  dataTagging.forEach(function(tag) {
+  if (tag.latitude && tag.longitude) {
+    var marker = L.marker([parseFloat(tag.latitude), parseFloat(tag.longitude)])
+      .addTo(map)
+      .bindPopup("<strong>" + tag.nama_belanja + "</strong><br>Oleh: " + tag.nama_user);
+
+    marker.on('click', function() {
+      fotoMarker.src = "/emvisi/uploads/" + tag.path_foto;
+      infoText.innerHTML = 
+        "<strong>Lokasi:</strong> " + tag.nama_belanja + "<br>" +
+        "<strong>User:</strong> " + tag.nama_user;
+    });
+  }
+});
+
+
+  // Set default view dan tampilkan foto/info pertama jika ada data
+  if(dataTagging.length > 0) {
+    map.setView([parseFloat(dataTagging[0].latitude), parseFloat(dataTagging[0].longitude)], 14);
+    fotoMarker.src = "/emvisi/uploads/" + dataTagging[0].path_foto;
+    infoText.innerHTML = 
+      "<strong>Lokasi:</strong> " + dataTagging[0].nama_belanja + "<br>" +
+      "<strong>User:</strong> " + dataTagging[0].nama_user;
+  }
 </script>
 
 </body>
