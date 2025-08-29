@@ -27,14 +27,11 @@ if ($uri === '/emvisi/check-radius') {
     exit;
 }
 
-// Halaman default
-include_once __DIR__ . "/view/home.php";
-
-
-if ($uri === '/emvisi/check-radius') {
-    include_once __DIR__ . '/controller/BelanjaController.php';
-    new BelanjaController();
+// Routing peta
+if ($uri === '/emvisi/peta' || $uri === '/emvisi/peta/') {
+    include_once __DIR__ . "/view/peta.php";
     exit;
 }
 
-
+// Halaman default (home)
+include_once __DIR__ . "/view/home.php";

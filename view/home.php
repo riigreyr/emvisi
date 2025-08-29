@@ -3,64 +3,24 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 include_once __DIR__ . '/../controller/HomeController.php';
 
 $controller = new HomeController();
-$photos = $controller->getUserPhotosForHome();
 
+// Ambil foto untuk slideshow
+if (isset($_SESSION['user'])) {
+    // user login → foto tagging sendiri
+    $photos = $controller->getUserPhotosForHome();
+} else {
+    // belum login → foto tagging terbaru semua user
+    $recentPhotos = $controller->getRecentPhotosAllUsers(5);
+    $photos = [];
+    foreach ($recentPhotos as $p) {
+        $photos[] = $p['path_foto'];
+    }
+}
 ?>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Homepage - BelanjaYuk</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    html, body { height: 100%; }
-    body { display: flex; flex-direction: column; }
-    main { flex: 1; }
-    .slideshow-img {
-      width: 100%; height: 400px; object-fit: cover; border-radius: 8px;
-    }
-    .carousel-caption-custom {
-      position: absolute; bottom: 10px; left: 15px;
-      background-color: rgba(0, 0, 0, 0.5); color: white;
-      padding: 5px 10px; border-radius: 5px; font-size: 0.9rem;
-    }
-    .card-header { font-weight: bold; }
-    footer {
-      background: #e9ecef; text-align: center;
-      padding: 1.5rem 0; font-size: 0.9rem; color: #333;
-    }
-    .card-equal-height { height: 100%; }
-    .bg-blue-dark { background-color: #0b3d91 !important; color: white !important; }
-    .btn-blue-dark {
-      background-color: #0b3d91; border-color: #0b3d91; color: white;
-    }
-    .btn-blue-dark:hover {
-      background-color: #092f6d; border-color: #092f6d; color: white;
-    }
-    .custom-klasemen-row { margin-top: 3rem; }
-  </style>
-</head>
+<?php include_once __DIR__ . "/head.php"; ?>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-blue-dark px-3">
-  <a class="navbar-brand" href="#">BelanjaYuk</a>
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/emvisi/">Beranda</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/emvisi/home/peta">Peta</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+<?php include_once __DIR__ . "/nav.php"; ?>
 
 <!-- Konten Utama -->
 <main>
@@ -68,33 +28,28 @@ $photos = $controller->getUserPhotosForHome();
     <div class="row gy-4">
       <div class="col-lg-7">
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner rounded-3 shadow-sm">
-            <?php if (!empty($photos)): ?>
-              <?php foreach ($photos as $index => $fotoPath): ?>
-                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                  <img src="/emvisi/uploads/<?= htmlspecialchars($fotoPath) ?>" class="slideshow-img" alt="Foto Tagging <?= $index + 1 ?>" />
-                </div>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <div class="carousel-item active position-relative">
-                <img src="../assets/img/slide1.jpg" class="slideshow-img" alt="Slide 1" />
-                <div class="carousel-caption-custom"></div>
-              </div>
-              <div class="carousel-item">
-                <img src="../assets/img/slide2.jpg" class="slideshow-img" alt="Slide 2" />
-              </div>
-              <div class="carousel-item">
-                <img src="../assets/img/slide3.jpg" class="slideshow-img" alt="Slide 3" />
-              </div>
-            <?php endif; ?>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-          </button>
+  <div class="carousel-inner rounded-3 shadow-sm">
+    <?php if (!empty($photos)): ?>
+        <?php foreach ($photos as $index => $fotoPath): ?>
+            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                <img src="/emvisi/uploads/<?= htmlspecialchars($fotoPath) ?>" class="slideshow-img" alt="Foto Tagging <?= $index + 1 ?>" />
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="carousel-item active">
+            <img src="/emvisi/uploads/foto_6899595329aa71.64687407.png" class="slideshow-img" alt="Default Slide" />
         </div>
+    <?php endif; ?>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
       </div>
 
       <div class="col-lg-5">
@@ -168,62 +123,16 @@ if (!empty($_SESSION['notif_register'])) {
         </div>
       </div>
     </div>
+    
 
     <!-- Klasemen -->
-    <div class="row custom-klasemen-row g-4">
-      <div class="col-md-4">
-        <div class="card shadow-sm card-equal-height">
-          <div class="card-header bg-blue-dark">Top 5 Klasemen</div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card shadow-sm card-equal-height h-100">
-          <div class="card-header bg-blue-dark">Top 5 Lokasi</div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item"><span class="badge bg-blue-dark float-end"></span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card shadow-sm card-equal-height">
-          <div class="card-header bg-blue-dark">Data</div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Total User <span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item">Total Lokasi <span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item">Total Tagging <span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item">Latest User Tagging <span class="badge bg-blue-dark float-end"></span></li>
-            <li class="list-group-item">Latest Lokasi Tagging <span class="badge bg-blue-dark float-end"></span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <?php include_once __DIR__ . "/klasemen.php"; ?>
+    
   </div>
 </main>
 
 <!-- Footer -->
-<footer class="mt-5 py-4 bg-blue-dark text-white">
-  <div class="container">
-    <strong>BelanjaYuk</strong><br>
-    <small>©2025 dikembangkan oleh Fakhri</small>
-    <div class="mt-2">
-      <strong>Kontak Kami</strong><br>
-      Dinas Komunikasi, Informatika dan Persandian Aceh<br>
-      Jl. Jalan. 10<br>
-      Banda Aceh
-    </div>
-  </div>
-</footer>
+<?php include_once __DIR__ . "/footer.php"; ?>
 
 <script>
   window.addEventListener('DOMContentLoaded', () => {

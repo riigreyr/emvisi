@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include_once __DIR__ . "/../controller/PetaController.php";
 
 $controller = new PetaController();
@@ -7,85 +7,11 @@ $dataBelanja = $controller->getDataBelanja();
 $dataTagging = $controller->getDataTagging();
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Peta - BelanjaYuk</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .container {
-      flex: 1 0 auto;
-    }
-    footer {
-      flex-shrink: 0;
-    }
-
-    .bg-blue-dark {
-      background-color: #0b3d91 !important;
-      color: white !important;
-    }
-    #map {
-      width: 800px;
-      height: 250px;
-      border-radius: 0.5rem;
-    }
-
-    /* Container foto & info di kanan */
-    #infoPanel {
-      width: 400px;
-      padding-left: 15px;
-    }
-    #infoPanel img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 0.5rem;
-      user-select: none;
-      pointer-events: none;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-    #infoText {
-      margin-top: 10px;
-      font-weight: 600;
-      color: #0b3d91;
-      min-height: 50px;
-    }
-
-    /* Responsive */
-    @media (max-width: 1200px) {
-      #map, #infoPanel {
-        width: 100% !important;
-        height: auto !important;
-      }
-      #infoPanel img {
-        height: auto !important;
-      }
-    }
-  </style>
-</head>
+<?php include_once __DIR__ . "/head.php"; ?>
 <body>
 
-<!-- Navbar dan Konten seperti sebelumnya -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-blue-dark px-3">
-  <a class="navbar-brand" href="/emvisi/">BelanjaYuk</a>
-  ...
-  <ul class="navbar-nav ms-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="<?= isset($_SESSION['user']) ? '/emvisi/dashboard' : '/emvisi/' ?>">Beranda</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="/emvisi/home/peta">Peta</a>
-    </li>
-  </ul>
-</nav>
+<!-- Navbar -->
+<?php include_once __DIR__ . "/nav.php"; ?>
 
 <div class="container mt-4">
   <div class="row gx-4 justify-content-center">
@@ -110,62 +36,12 @@ $dataTagging = $controller->getDataTagging();
 
   <!-- (Klasemen dan footer tetap sama, tidak diubah) -->
    <!-- Klasemen bawah full lebar -->
-<div class="row mt-4 g-4">
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-blue-dark">🏆 Top 5 User</div>
-      <ul class="list-group list-group-flush">
-        <?php foreach ($data['klasemen'] ?? [] as $k): ?>
-          <li class="list-group-item">
-            <?= htmlspecialchars($k['nama']) ?>
-            <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($k['skor']) ?></span>
-          </li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-blue-dark">📍 Lokasi Terbanyak</div>
-      <ul class="list-group list-group-flush">
-        <?php foreach ($data['terbanyak'] ?? [] as $t): ?>
-          <li class="list-group-item">
-            <?= htmlspecialchars($t['nama']) ?>
-            <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($t['total']) ?></span>
-          </li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-blue-dark">📊 Statistik</div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">User <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_user'] ?? '0') ?></span></li>
-        <li class="list-group-item">Tagging <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_tagging'] ?? '0') ?></span></li>
-        <li class="list-group-item">Belanja <span class="badge bg-blue-dark float-end"><?= htmlspecialchars($data['total_belanja'] ?? '0') ?></span></li>
-      </ul>
-    </div>
-  </div>
-</div>
-
+<?php include_once __DIR__ . "/klasemen.php"; ?>
 </div>
 
 
-<footer class="mt-5 py-4 bg-blue-dark text-white text-center" style="padding: 1.5rem 0; font-size: 0.9rem;">
-  <div class="container">
-    <strong>BelanjaYuk</strong><br />
-    <small>©<?= date('Y') ?> dikembangkan oleh Fakhri</small><br />
-    <div class="mt-2">
-      <strong>Kontak Kami</strong><br />
-      Dinas Komunikasi, Informatika dan Persandian Aceh<br />
-      Jl. Jalan. 10<br />
-      Banda Aceh
-    </div>
-  </div>
-</footer>
+<?php include_once __DIR__ . "/footer.php"; ?>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

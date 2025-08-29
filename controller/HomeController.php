@@ -1,37 +1,34 @@
 <?php
 include_once __DIR__ . '/../model/User.php';
+include_once __DIR__ . '/../model/TagBelanja.php';
 
 class HomeController {
     private $userModel;
+    private $tagModel;
 
     public function __construct() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) session_start();
 
         $this->userModel = new User();
+        $this->tagModel = new TagBelanja();
 
-        // Handle POST (register & login)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['register'])) $this->handleRegister();
             if (isset($_POST['login'])) $this->handleLogin();
         }
 
-        // Handle logout via GET
-        if (isset($_GET['logout'])) {
-            $this->handleLogout();
-        }
+        if (isset($_GET['logout'])) $this->handleLogout();
     }
 
     public function getUserPhotosForHome() {
-    if (!isset($_SESSION['user'])) return [];
-$userId = $_SESSION['user']['id'];
-return $this->userModel->getUserTaggingPhotos($userId);
+        if (!isset($_SESSION['user'])) return [];
+        $userId = $_SESSION['user']['id'];
+        return $this->userModel->getUserTaggingPhotos($userId);
+    }
 
-}
-
-
-
+    public function getRecentPhotosAllUsers($limit = 5) {
+        return $this->tagModel->getRecentUserTaggingPhotos($limit);
+    }
 
     private function handleRegister() {
         if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['fullname'])) {
@@ -70,10 +67,7 @@ return $this->userModel->getUserTaggingPhotos($userId);
             return;
         }
 
-        // Simpan data user ke session
         $_SESSION['user'] = $user;
-
-        // Redirect ke dashboard
         header("Location: /emvisi/dashboard");
         exit;
     }
