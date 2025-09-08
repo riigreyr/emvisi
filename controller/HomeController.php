@@ -51,26 +51,24 @@ class HomeController {
         }
     }
 
-    private function handleLogin() {
-        $email = trim($_POST['email']);
-        $password = trim($_POST['password']);
+   private function handleLogin() {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-        $user = $this->userModel->getByEmail($email);
+    $user = $this->userModel->getByEmail($email);
 
-        if (!$user || !password_verify($password, $user['user_password'])) {
-            $_SESSION['notif_login'] = "Email atau password salah.";
-            return;
-        }
-
-        if ($user['is_active'] !== '1') {
-            $_SESSION['notif_login'] = "Akun Anda belum aktif.";
-            return;
-        }
-
+    if ($user && password_verify($password, $user['user_password'])) {
         $_SESSION['user'] = $user;
-        header("Location: /emvisi/dashboard");
+        // redirect langsung ke dashboard
+        header("Location: /emvisi/dashboard/");
         exit;
+    } else {
+        $_SESSION['notif_login'] = "Email atau password salah.";
+        $_SESSION['switch_to_login'] = true;
     }
+}
+
+    
 
     private function handleLogout() {
         session_destroy();

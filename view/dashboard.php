@@ -6,14 +6,14 @@ if (!isset($_SESSION['user'])) {
 }
 $user = $_SESSION['user'];
 ?>
-
+<!-- Header -->
 <?php include_once __DIR__ . "/head.php"; ?>
 <body>
-
+<!-- Navbar -->
 <?php include_once __DIR__ . "/nav.php"; ?>
 
 <main class="container mt-4">
-  <!-- Tambahkan di bawah main, sebelum </body> -->
+  <!-- Logout -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
   <div id="tagToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="d-flex">
@@ -29,7 +29,7 @@ $user = $_SESSION['user'];
     <h2>Selamat Datang di Dashboard</h2>
   </div>
 
-<!-- Card Profil + Tabs -->
+<!-- Form-->
 <div class="card shadow-sm">
   <div class="card-header bg-blue-dark text-white d-flex justify-content-between align-items-center">
     Profil Anda
@@ -49,7 +49,7 @@ $user = $_SESSION['user'];
     </ul>
 
     <div class="tab-content" id="profileTabContent">
-      <!-- Edit Profile -->
+<!-- Edit Profile -->
       <div class="tab-pane fade show active" id="edit-profile" role="tabpanel">
         <form method="post" action="/emvisi/dashboard" class="row g-3 align-items-center">
           <div class="col-md-4">
@@ -92,8 +92,7 @@ $user = $_SESSION['user'];
       <label>Foto Upload *</label>
       <input type="file" name="foto" id="fotoUpload" class="form-control" disabled required>
     </div>
-
-    <!-- Tombol sekarang sejajar kanan seperti Update -->
+  <!-- Tagging -->
     <div class="col-12 text-end mt-2 d-flex justify-content-end gap-2">
       <button type="button" onclick="checkLocation()" class="btn btn-secondary">Check Lokasi & Marker</button>
       <button type="submit" class="btn btn-success" id="btnTagging" disabled>Tagging</button>
@@ -106,10 +105,10 @@ $user = $_SESSION['user'];
 </div>
 
 
-
-  <?php include_once __DIR__ . "/klasemen.php"; ?>
+<!-- Klasemen -->
+<?php include_once __DIR__ . "/klasemen.php"; ?>
 </main>
-
+<!-- Footer -->
 <?php include_once __DIR__ . "/footer.php"; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

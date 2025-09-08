@@ -89,20 +89,20 @@
     .custom-klasemen-row { margin-top: 3rem; }
 
     .main-content {
-  margin-top: -40px; /* bisa disesuaikan (default bootstrap mt-4 itu 1.5rem ≈ 24px) */
+  margin-top: -40px; 
 }
 
 .btn-logout {
-  height: 38px;            /* samain tinggi dengan .btn-sm bootstrap */
-  line-height: 24px;       /* biar teks + icon sejajar */
+  height: 38px;            
+  line-height: 24px;       
   display: flex;           
-  align-items: center;     /* icon + teks di tengah vertikal */
-  gap: 5px;                /* jarak icon & teks */
+  align-items: center;     
+  gap: 5px;                
 }
 
 .btn-logout:hover {
-  background-color: #f8f9fa; /* warna hover */
-  color: #0b3d91;           /* biar hover kelihatan */
+  background-color: #f8f9fa; 
+  color: #0b3d91;           
 }
 
 
