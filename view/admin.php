@@ -37,7 +37,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
-        <!-- Profile Tab -->
+        <!-- Edit Profile -->
         <div class="tab-pane fade show active" id="profile" role="tabpanel">
             <div class="card p-4">
                 <h5 class="mb-3">Update Profile</h5>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             </div>
         </div>
 
-        <!-- Klasemen Tab -->
+        <!-- Klasemen  -->
         <div class="tab-pane fade" id="klasemen" role="tabpanel">
             <div class="card p-4">
                 <div class="d-flex justify-content-between mb-3">
@@ -107,7 +107,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             </div>
         </div>
 
-        <!-- Halte Tab -->
+        <!-- Belanja Tab -->
         <div class="tab-pane fade" id="halte" role="tabpanel">
             <div class="card p-4">
                 <div class="d-flex justify-content-between mb-3">
@@ -185,18 +185,18 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     </div>
 </div>
 
-<!-- Halte Modal -->
-<div class="modal fade" id="halteModal" tabindex="-1">
+<!-- Belanja Modal -->
+<div class="modal fade" id="BelanjaModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form>
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Halte</h5>
+                    <h5 class="modal-title">Add Belanja</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Nama Wisata</label>
+                        <label>Nama Tempat Belanja</label>
                         <input type="text" class="form-control">
                     </div>
                     <div class="row">

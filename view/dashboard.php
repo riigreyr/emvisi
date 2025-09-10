@@ -6,17 +6,21 @@ if (!isset($_SESSION['user'])) {
 }
 $user = $_SESSION['user'];
 ?>
+
 <!-- Header -->
 <?php include_once __DIR__ . "/head.php"; ?>
 <body>
+
+
 <!-- Navbar -->
 <?php include_once __DIR__ . "/nav.php"; ?>
 
+<!-- Logout -->
 <main class="container mt-4">
-  <!-- Logout -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
   <div id="tagToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="d-flex">
+<!--Notif-->
       <div class="toast-body">
         Berhasil Tagging!
       </div>
@@ -69,7 +73,7 @@ $user = $_SESSION['user'];
           </div>
         </form>
       </div>
-
+<!--Form Tagging-->
     <div class="tab-pane fade" id="tagging" role="tabpanel">
   <form method="post" action="/emvisi/dashboard" enctype="multipart/form-data" id="tagForm" class="row g-3 align-items-center">
     <div class="col-md-2">

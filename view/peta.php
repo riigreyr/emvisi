@@ -25,7 +25,7 @@ $dataTagging = $controller->getDataTagging();
       </div>
     </div>
 
-    <!-- Panel Foto dan Info User & Lokasi -->
+    <!-- Panel Info & Foto -->
     <div class="col-auto d-flex align-items-start">
       <div id="infoPanel">
         <img id="fotoMarker" src="" alt="Foto Lokasi" />
@@ -34,8 +34,7 @@ $dataTagging = $controller->getDataTagging();
     </div>
   </div>
 
-  <!-- (Klasemen dan footer tetap sama, tidak diubah) -->
-   <!-- Klasemen bawah full lebar -->
+  <!-- Klasemen -->
 <?php include_once __DIR__ . "/klasemen.php"; ?>
 </div>
 
@@ -82,7 +81,6 @@ $dataTagging = $controller->getDataTagging();
 });
 
 
-  // Set default view dan tampilkan foto/info pertama jika ada data
   if(dataTagging.length > 0) {
     map.setView([parseFloat(dataTagging[0].latitude), parseFloat(dataTagging[0].longitude)], 14);
     fotoMarker.src = "/emvisi/uploads/" + dataTagging[0].path_foto;
